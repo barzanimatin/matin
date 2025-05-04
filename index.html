@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قورئانی پیرۆز - هەموو سوورەتەکان</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ڕەنگەکانی سەرەکی */
+        :root {
+            --primary-color: #2c786c;
+            --secondary-color: #004445;
+            --accent-color: #f8b400;
+            --text-color: #333;
+            --light-bg: #faf5e4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Amiri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            direction: rtl;
+            line-height: 1.6;
+        }
+        
+        /* سەرپەڕ */
+        .header {
+            background: linear-gradient(rgba(0, 68, 69, 0.8), rgba(0, 68, 69, 0.9)),
+                        url('https://images.unsplash.com/photo-1542816417-0983675ab2dd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center/cover;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            color: var(--accent-color);
+        }
+        
+        .search-box {
+            margin: 1.5rem auto;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* لیستی سوورەتەکان */
+        .sura-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .sura-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 2rem;
+        }
+        
+        .sura-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 4px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sura-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .sura-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            align-self: flex-start;
+        }
+        
+        .sura-name {
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .sura-name-ar {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .sura-info {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+        
+        /* پەخشکەر */
+        .audio-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--secondary-color);
+            padding: 1rem 2rem;
+            color: white;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .player-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        #currentSura {
+            font-size: 1.2rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        audio {
+            width: 100%;
+            border-radius: 8px;
+        }
+        
+        /* وێنەی پەنجەرەی بچووک */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .sura-list {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .sura-name {
+                font-size: 1.2rem;
+            }
+            
+            .sura-name-ar {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-quran"></i>
+            <span>قورئانی پیرۆز</span>
+        </div>
+        <div class="search-box">
+            <input type="text" id="search" placeholder="گەڕان بۆ سوورەت... (وەک: 'بقرة' یان '٥')">
+        </div>
+    </header>
+
+    <div class="sura-container">
+        <div class="sura-list" id="suraList">
+            <!-- سوورەتەکان لێرە زیاد دەکرێن -->
+        </div>
+    </div>
+
+    <div class="audio-player">
+        <div class="player-container">
+            <h3 id="currentSura">سوورەتی هەڵبژێردراو</h3>
+            <audio id="audio" controls></audio>
+        </div>
+    </div>
+
+    <script>
+        // لیستی تەواوی سوورەتەکانی قورئان (114 سوورەت) بە دەنگی مشاری راشد
+        const quranSuras = [
+            { 
+                id: 1,
+                name: "سورة الفاتحة", 
+                name_ar: "الفاتحة",
+                audio: "https://server6.mp3quran.net/kurdi/001.mp3",
+                place: "مکیة",
+                verses: 7
+            },
+            { 
+                id: 2,
+                name: "سورة البقرة", 
+                name_ar: "البقرة",
+                audio: "https://server.mp3quran.net/mishary_rashid/002.mp3",
+                place: "مدنیة",
+                verses: 286
+            },
+            // ... (تکایە هەموو 114 سوورەت لێرە زیاد بکە)
+            { 
+                id: 114,
+                name: "سورة الناس", 
+                name_ar: "الناس",
+                audio: "https://server.mp3quran.net/mishary_rashid/114.mp3",
+                place: "مکیة",
+                verses: 6
+            }
+        ];
+
+        // نمایشدانی سوورەتەکان
+        function displaySuras(suras = quranSuras) {
+            const suraList = document.getElementById('suraList');
+            suraList.innerHTML = '';
+            
+            suras.forEach(sura => {
+                const suraElement = document.createElement('div');
+                suraElement.className = 'sura-item';
+                suraElement.innerHTML = `
+                    <div class="sura-number">${sura.id}</div>
+                    <div class="sura-name-ar">${sura.name_ar}</div>
+                    <h3 class="sura-name">${sura.name}</h3>
+                    <div class="sura-info">
+                        <span>${sura.place}</span>
+                        <span>${sura.verses} آیات</span>
+                    </div>
+                `;
+                
+                suraElement.addEventListener('click', () => {
+                    playSura(sura);
+                });
+                
+                suraList.appendChild(suraElement);
+            });
+        }
+
+        // پەخشکردنی سوورەت
+        function playSura(sura) {
+            const audioPlayer = document.getElementById('audio');
+            const currentSuraElement = document.getElementById('currentSura');
+            
+            audioPlayer.src = sura.audio;
+            currentSuraElement.textContent = `ئێستا پەخش دەکرێت: ${sura.name}`;
+            audioPlayer.play();
+            
+            // هێنانەوەی سوورەتە هەڵبژێردراوەکە بۆ بینین
+            document.querySelectorAll('.sura-item').forEach(item => {
+                item.style.borderBottom = '4px solid var(--primary-color)';
+            });
+            event.currentTarget.style.borderBottom = '4px solid var(--accent-color)';
+        }
+
+        // گەڕان لە ناو سوورەتەکان
+        document.getElementById('search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredSuras = quranSuras.filter(sura => 
+                sura.name.toLowerCase().includes(searchTerm) || 
+                sura.name_ar.includes(searchTerm) ||
+                sura.id.toString().includes(searchTerm)
+            );
+            displaySuras(filteredSuras);
+        });
+
+        // دەستپێکردن
+        displaySuras();
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خوێنی پیرۆز - سۆشیال میدیا</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ڕەنگەکان */
+        :root {
+            --facebook: #1877f2;
+            --youtube: #ff0000;
+            --telegram: #0088cc;
+            --instagram: #e4405f;
+            --tiktok: #000000;
+            --whatsapp: #25d366;
+        }
+        
+        /* سۆشیال میدیا لە سەرپەڕ */
+        .social-header {
+            display: flex;
+            gap: 15px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* بەشی پەیوەندی */
+        .contact-section {
+            background: #f9f9f9;
+            padding: 50px;
+            text-align: center;
+        }
+        
+        .contact-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .social-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 120px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .social-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        
+        .social-card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .social-name {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- سەرپەڕ -->
+    <header class="header">
+        <div class="social-header">
+            <a href="لینکی_فەیسبووک" class="social-icon" style="background: var(--facebook);">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="لینکی_یوتیوب" class="social-icon" style="background: var(--youtube);">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="لینکی_تێلێگرام" class="social-icon" style="background: var(--telegram);">
+                <i class="fab fa-telegram-plane"></i>
+            </a>
+        </div>
+        
+        <div class="hero">
+            <h1>خوێنی پیرۆز</h1>
+            <p>پەخشی ڕۆژانەی خوێن و فێرکاری ئیسلامی</p>
+        </div>
+    </header>
+
+    <!-- بەشی پەیوەندی -->
+    <section class="contact-section">
+        <h2 class="contact-title">پەیوەندی بە ئێمەوە</h2>
+        <div class="social-links">
+            <a href="لینکی_فەیسبووک" class="social-card">
+                <i class="fab fa-facebook" style="color: var(--facebook);"></i>
+                <div class="social-name">فەیسبووک</div>
+            </a>
+            
+            <a href="لینکی_یوتیوب" class="social-card">
+                <i class="fab fa-youtube" style="color: var(--youtube);"></i>
+                <div class="social-name">یوتیوب</div>
+            </a>
+            
+            <a href="لینکی_ئینستاگرام" class="social-card">
+                <i class="fab fa-instagram" style="color: var(--instagram);"></i>
+                <div class="social-name">ئینستاگرام</div>
+            </a>
+            
+            <a href="لینکی_تێلێگرام" class="social-card">
+                <i class="fab fa-telegram" style="color: var(--telegram);"></i>
+                <div class="social-name">تێلێگرام</div>
+            </a>
+            
+            <a href="لینکی_واتسئاپ" class="social-card">
+                <i class="fab fa-whatsapp" style="color: var(--whatsapp);"></i>
+                <div class="social-name">واتسئاپ</div>
+            </a>
+            
+            <a href="لینکی_تیکتۆک" class="social-card">
+                <i class="fab fa-tiktok" style="color: var(--tiktok);"></i>
+                <div class="social-name">تیکتۆک</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- پێنجە -->
+    <footer>
+        <p>© 2023 خوێنی پیرۆز. هەموو مافەکان پارێزراوە.</p>
+    </footer>
+</body>
+</html>
